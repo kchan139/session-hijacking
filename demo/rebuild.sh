@@ -1,9 +1,7 @@
 #!/bin/bash
-export PODMAN_COMPOSE_WARNING_LOGS=false
 set -e
 cd "$(dirname "$0")"
 
-PROJECT_ROOT=$(git rev-parse --show-toplevel)
 TARGET=${1:-all}
 
 # validate input
