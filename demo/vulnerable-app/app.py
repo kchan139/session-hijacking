@@ -1,12 +1,13 @@
-from flask import Flask, request, render_template, make_response, redirect, url_for
+from flask import Flask, request, render_template, make_response, redirect
 import secrets
-import urllib.parse
+import datetime
 
 app = Flask(__name__)
 
+# in-memory storage
 users = {"alice": "password123", "bob": "qwerty456"}
+
 sessions = {}  # session_id -> username
-display_names = {}  # session_id -> display_name (avoid querystring XSS)
 
 
 @app.route("/")
@@ -19,7 +20,7 @@ def login():
     if request.method == "GET":
         # NOTE - VULNERABLE: Session fixation - accept session_id from URL
         fixed_session = request.args.get("session_id")
-        response = make_response(render_template_string(LOGIN_PAGE))
+        response = make_response(render_template("login.html"))
         if fixed_session:
             response.set_cookie("session_id", fixed_session)
         return response
@@ -40,7 +41,7 @@ def login():
         response.set_cookie("session_id", session_id)
         return response
 
-    return render_template_string(LOGIN_PAGE, error="Invalid credentials")
+    return render_template("login.html", error="Invalid credentials")
 
 
 @app.route("/dashboard")
@@ -53,8 +54,8 @@ def dashboard():
     username = sessions[session_id]
     display_name = request.args.get("display_name", "")
 
-    return render_template_string(
-        DASHBOARD_PAGE, username=username, display_name=display_name
+    return render_template(
+        "dashboard.html", username=username, display_name=display_name
     )
 
 
@@ -65,9 +66,9 @@ def search():
     if not session_id or session_id not in sessions:
         return redirect("/login")
 
-    # VULNERABLE: XSS via search query
+    # NOTE - VULNERABLE: XSS via search query
     query = request.args.get("q", "")
-    return render_template_string(SEARCH_PAGE, query=query)
+    return render_template("search.html", query=query)
 
 
 @app.route("/profile", methods=["POST"])

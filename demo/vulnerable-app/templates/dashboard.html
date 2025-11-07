@@ -18,7 +18,7 @@
   </form>
 
   {% if display_name %}
-    <p>Display name: {{ display_name }}</p>
+    <p>Display name: {{ display_name|safe }}</p>
   {% endif %}
 
   <br><a href="/logout">Logout</a>
