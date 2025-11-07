@@ -1,26 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head><title>Dashboard - Vulnerable App</title></head>
-<body>
-  <h1>Welcome, {{ username }}!</h1>
-  <p>Your session is active.</p>
+    <head>
+        <title>Dashboard - Vulnerable App</title>
+    </head>
+    <body>
+        <h1>Welcome, {{ username }}!</h1>
+        <p>Your session is active.</p>
 
-  <h2>Search</h2>
-  <form method="GET" action="/search">
-    <input type="text" name="q" placeholder="Search...">
-    <button type="submit">Search</button>
-  </form>
+        <h2>Search</h2>
+        <form method="GET" action="/search">
+            <input type="text" name="q" placeholder="Search..." />
+            <button type="submit">Search</button>
+        </form>
 
-  <h2>Profile</h2>
-  <form method="POST" action="/profile">
-    <label>Display Name: <input type="text" name="display_name"></label><br>
-    <button type="submit">Update</button>
-  </form>
+        <h2>Profile</h2>
+        <form method="POST" action="/profile">
+            <label
+                >Display Name: <input type="text" name="display_name" /></label
+            ><br />
+            <button type="submit">Update</button>
+        </form>
 
-  {% if display_name %}
-    <p>Display name: {{ display_name|safe }}</p>
-  {% endif %}
+        {% if display_name %}
+        <p>Display name: {{ display_name|safe }}</p>
+        {% endif %}
 
-  <br><a href="/logout">Logout</a>
-</body>
+        <br /><a href="/logout">Logout</a>
+    </body>
 </html>

@@ -1,15 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head><title>Login - Vulnerable App</title></head>
-<body>
-  <h1>Login</h1>
-  <form method="POST" action="/login">
-    <label>Username: <input type="text" name="username" required></label><br>
-    <label>Password: <input type="password" name="password" required></label><br>
-    <button type="submit">Login</button>
-  </form>
-  {% if error %}
-    <p style="color:red">{{ error|safe }}</p>
-  {% endif %}
-</body>
+    <head>
+        <title>Login - Vulnerable App</title>
+    </head>
+    <body>
+        <h1>Login</h1>
+        <form method="POST" action="/login">
+            <label
+                >Username: <input type="text" name="username" required /></label
+            ><br />
+            <label
+                >Password:
+                <input type="password" name="password" required /></label
+            ><br />
+            <button type="submit">Login</button>
+        </form>
+        {% if error %}
+        <p style="color: red">{{ error|safe }}</p>
+        {% endif %}
+    </body>
 </html>
