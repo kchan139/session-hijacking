@@ -1,4 +1,12 @@
 services:
+  legit-app:
+    build: ./attacker-tools
+    container_name: legit-app
+    ports:
+      - 127.0.0.1:8080:8080
+    networks:
+      - network_session_hijacking
+
   vuln-app:
     build: ./vulnerable-app
     container_name: vuln-app

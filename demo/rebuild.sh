@@ -7,9 +7,9 @@ PROJECT_ROOT=$(git rev-parse --show-toplevel)
 TARGET=${1:-all}
 
 # validate input
-if [[ ! $TARGET =~ ^(vuln|hard|all)$ ]]; then
+if [[ ! $TARGET =~ ^(legit|vuln|hard|all)$ ]]; then
   echo "invalid target $TARGET"
-  echo "usage: $0 [ vuln | hard | all ]"
+  echo "usage: $0 [ legit | vuln | hard | all ]"
   exit 1
 fi
 
