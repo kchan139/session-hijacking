@@ -1,0 +1,12 @@
+services:
+  vuln-app:
+    build: ./vulnerable-app
+    container_name: vuln-app
+    ports:
+      - 127.0.0.1:5000:5000
+    networks:
+      - network_session_hijacking
+
+networks:
+  network_session_hijacking:
+    driver: bridge
