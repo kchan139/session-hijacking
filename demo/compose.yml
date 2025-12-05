@@ -1,7 +1,7 @@
 services:
-  legit-app:
+  attacker-app:
     build: ./attacker-tools
-    container_name: legit-app
+    container_name: attacker-app
     env_file: .env
     ports:
       - 127.0.0.1:8080:8080
@@ -13,6 +13,14 @@ services:
     container_name: vuln-app
     ports:
       - 127.0.0.1:5001:5001
+    networks:
+      - network_session_hijacking
+
+  hard-app:
+    build: ./hardened-app
+    container_name: hard-app
+    ports:
+      - 127.0.0.1:5002:5002
     networks:
       - network_session_hijacking
 
