@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template_string, make_response, redirect, escape
+from flask import Flask, request, render_template_string, make_response, redirect
+from markupsafe import escape
 import secrets
 import datetime
 
@@ -6,14 +7,16 @@ app = Flask(__name__)
 
 # In-memory storage
 users = {"alice": "password123", "bob": "qwerty456"}
-sessions = {}  # session_id -> {"username": str, "ip": str, "user_agent": str, "created": datetime}
+sessions = (
+    {}
+)  # session_id -> {"username": str, "ip": str, "user_agent": str, "created": datetime}
 
 
 def get_client_fingerprint():
     """Get client IP and User-Agent for session binding."""
     return {
         "ip": request.remote_addr,
-        "user_agent": request.headers.get("User-Agent", "")
+        "user_agent": request.headers.get("User-Agent", ""),
     }
 
 
@@ -21,16 +24,19 @@ def validate_session(session_id):
     """Validate session exists and matches client fingerprint."""
     if not session_id or session_id not in sessions:
         return None
-    
+
     session = sessions[session_id]
     fingerprint = get_client_fingerprint()
-    
+
     # Check IP and User-Agent match
-    if session["ip"] != fingerprint["ip"] or session["user_agent"] != fingerprint["user_agent"]:
+    if (
+        session["ip"] != fingerprint["ip"]
+        or session["user_agent"] != fingerprint["user_agent"]
+    ):
         # Session hijacking detected - invalidate session
         del sessions[session_id]
         return None
-    
+
     return session["username"]
 
 
@@ -51,14 +57,14 @@ def login():
     if username in users and users[username] == password:
         # FIXED: Always generate new session ID on login (prevent fixation)
         session_id = secrets.token_urlsafe(32)
-        
+
         # Store session with fingerprint
         fingerprint = get_client_fingerprint()
         sessions[session_id] = {
             "username": username,
             "ip": fingerprint["ip"],
             "user_agent": fingerprint["user_agent"],
-            "created": datetime.datetime.now()
+            "created": datetime.datetime.now(),
         }
 
         response = make_response(redirect("/dashboard"))
@@ -66,10 +72,10 @@ def login():
         response.set_cookie(
             "session_id",
             session_id,
-            httponly=True,    # Prevent JavaScript access
-            secure=True,       # Only send over HTTPS (use False for local HTTP testing)
-            samesite="Strict", # Prevent CSRF
-            max_age=1800       # 30 minute timeout
+            httponly=True,  # Prevent JavaScript access
+            secure=True,  # Only send over HTTPS (use False for local HTTP testing)
+            samesite="Strict",  # Prevent CSRF
+            max_age=1800,  # 30 minute timeout
         )
         return response
 
@@ -80,7 +86,7 @@ def login():
 def dashboard():
     session_id = request.cookies.get("session_id")
     username = validate_session(session_id)
-    
+
     if not username:
         return redirect("/login")
 
@@ -88,9 +94,7 @@ def dashboard():
     display_name = escape(request.args.get("display_name", ""))
 
     return render_template_string(
-        DASHBOARD_TEMPLATE,
-        username=username,
-        display_name=display_name
+        DASHBOARD_TEMPLATE, username=username, display_name=display_name
     )
 
 
@@ -98,13 +102,13 @@ def dashboard():
 def search():
     session_id = request.cookies.get("session_id")
     username = validate_session(session_id)
-    
+
     if not username:
         return redirect("/login")
 
     # FIXED: Escape query to prevent XSS
     query = escape(request.args.get("q", ""))
-    
+
     return render_template_string(SEARCH_TEMPLATE, query=query)
 
 
@@ -112,13 +116,13 @@ def search():
 def profile():
     session_id = request.cookies.get("session_id")
     username = validate_session(session_id)
-    
+
     if not username:
         return redirect("/login")
 
     # FIXED: Escape and validate display_name
     display_name = escape(request.form.get("display_name", ""))
-    
+
     return redirect(f"/dashboard?display_name={display_name}")
 
 

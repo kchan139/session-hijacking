@@ -5,9 +5,9 @@ cd "$(dirname "$0")"
 TARGET=${1:-all}
 
 # validate input
-if [[ ! $TARGET =~ ^(legit|vuln|hard|all)$ ]]; then
+if [[ ! $TARGET =~ ^(attacker|vuln|hard|all)$ ]]; then
   echo "invalid target $TARGET"
-  echo "usage: $0 [ legit | vuln | hard | all ]"
+  echo "usage: $0 [ attacker | vuln | hard | all ]"
   exit 1
 fi
 
@@ -28,7 +28,7 @@ $TOOL compose down -v
 echo
 if [[ $TARGET =~ ^(all)$ ]]; then
   echo "--- Rebuilding all apps ---"
-  $TOOL compose build --no-cache
+  $TOOL compose build --no-cache 1>/dev/null
 else
   echo "--- Rebuilding $TARGET-app ---"
   $TOOL compose build --no-cache "$TARGET-app"
